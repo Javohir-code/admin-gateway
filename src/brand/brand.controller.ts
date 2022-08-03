@@ -59,23 +59,18 @@ export class BrandController implements OnModuleInit {
   @Post('/addNew')
   @ApiResponse({ type: [BrandDto] })
   async AddNew(
-    @Body() body?: { address: any; company: any },
+    @Body() body?: any,
     @Headers('lang') lang?: LangEnum,
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(
-      this.branService.AddNew({
-        address: body.address,
-        company: body.company,
-      }),
-    );
+    return lastValueFrom(this.branService.AddNew({ data: body }, metadata));
   }
 
   @Put('/update/:id')
   @ApiResponse({ type: BrandDto })
-  async Update(@Param('id') id: number, @Body() body: BrandDto): Promise<any> {
-    return lastValueFrom(this.branService.Update({ id, company: body }));
+  async Update(@Param('id') id: number, @Body() body: any): Promise<any> {
+    return lastValueFrom(this.branService.Update({ id, data: body }));
   }
 
   @Delete('/delete/:id')

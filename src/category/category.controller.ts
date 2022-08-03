@@ -62,17 +62,12 @@ export class CategoryController implements OnModuleInit {
   @Post('/addNew')
   @ApiResponse({ type: [CategoryDto] })
   async AddNew(
-    @Body() body?: { address: any; company: any },
+    @Body() body?: any,
     @Headers('lang') lang?: LangEnum,
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(
-      this.categoryService.Create({
-        address: body.address,
-        company: body.company,
-      }),
-    );
+    return lastValueFrom(this.categoryService.AddNew(body));
   }
 
   @Put('/update/:id')

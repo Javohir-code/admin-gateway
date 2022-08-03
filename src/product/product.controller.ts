@@ -59,31 +59,23 @@ export class ProductController implements OnModuleInit {
   @Post('/addNew')
   @ApiResponse({ type: [ProductDto] })
   async AddNew(
-    @Body() body?: { address: any; company: any },
+    @Body() body?: any,
     @Headers('lang') lang?: LangEnum,
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(
-      this.productService.Create({
-        address: body.address,
-        company: body.company,
-      }),
-    );
+    return lastValueFrom(this.productService.Create(body, metadata));
   }
 
   @Put('/update/:id')
   @ApiResponse({ type: ProductDto })
-  async Update(
-    @Param('id') id: number,
-    @Body() body: ProductDto,
-  ): Promise<any> {
-    return lastValueFrom(this.productService.Update({ id, company: body }));
+  async Update(@Param('id') id: string, @Body() body: any): Promise<any> {
+    return lastValueFrom(this.productService.Update({ id, ...body }));
   }
 
   @Delete('/delete/:id')
   @ApiResponse({})
-  async Delete(@Param('id') id: number): Promise<any> {
+  async Delete(@Param('id') id: string): Promise<any> {
     return lastValueFrom(this.productService.Delete({ id })).catch((r) => {
       throw new HttpException(
         {
