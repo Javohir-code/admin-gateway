@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
-import { CompanyController } from './company.controller';
+import { ProductController } from './product.controller';
 import { HttpModule } from '@nestjs/axios';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { GRPC_COMPANY_PACKAGE } from './constants';
-import { ownerMsUrl } from 'src/shared/constants/msUrls';
+import { GRPC_PRODUCT_PACKAGE } from './constants';
+import { productMsUrl } from 'src/shared/constants/msUrls';
 
 @Module({
   imports: [
     HttpModule,
     ClientsModule.register([
       {
-        name: GRPC_COMPANY_PACKAGE,
+        name: GRPC_PRODUCT_PACKAGE,
         transport: Transport.GRPC,
         options: {
-          package: 'company',
-          protoPath: join(process.cwd(), '../helper-proto/company.proto'),
-          url: ownerMsUrl,
+          package: 'product',
+          protoPath: join(process.cwd(), '../helper-proto/product.proto'),
+          url: productMsUrl,
           loader: {
             objects: true,
           },
@@ -24,7 +24,7 @@ import { ownerMsUrl } from 'src/shared/constants/msUrls';
       },
     ]),
   ],
-  controllers: [CompanyController],
+  controllers: [ProductController],
   providers: [],
 })
-export class CompanyModule {}
+export class ProductModule {}

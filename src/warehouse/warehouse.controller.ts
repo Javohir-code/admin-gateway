@@ -31,7 +31,6 @@ export class WarehouseController implements OnModuleInit {
   onModuleInit() {
     this.warehouseService =
       this.client.getService<WarehouseInterface>("WarehouseService");
-    console.log(this.warehouseService);
   }
 
   @Get("/getAll")

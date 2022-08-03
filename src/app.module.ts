@@ -9,6 +9,9 @@ import { CompanyModule } from './company/company.module';
 import { AddressOwnerModule } from './addressOwner/addressOwner.module';
 import { EmployeeModule } from './employee/employee.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
+import { ProductModule } from './product/product.module';
+import { CategoryModule } from './category/category.module';
+import { BrandModule } from './brand/brand.module';
 
 @Module({
   imports: [
@@ -19,6 +22,9 @@ import { WarehouseModule } from './warehouse/warehouse.module';
     AddressOwnerModule,
     WarehouseModule,
     EmployeeModule,
+    ProductModule,
+    CategoryModule,
+    BrandModule,
   ],
   controllers: [AppController],
   providers: [AppService],

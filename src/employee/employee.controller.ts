@@ -31,7 +31,6 @@ export class EmployeeController implements OnModuleInit {
   onModuleInit() {
     this.employeeService =
       this.client.getService<EmployeeInterface>("EmployeeService");
-    console.log(this.employeeService);
   }
 
   @Get("/getAll")
@@ -62,7 +61,6 @@ export class EmployeeController implements OnModuleInit {
   @Post("/addNew")
   @ApiResponse({ type: [EmployeeDto] })
   async AddNew(@Body() body?: any): Promise<any> {
-    console.log(body);
     return lastValueFrom(
       this.employeeService.AddNew({
         employee: body

@@ -19,3 +19,27 @@ export enum EmployeeStatus {
   ACTIVE,
   BLOCKED,
 }
+
+export enum ProductStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  PENDING = 'PENDING',
+  ARCHIVED = 'ARCHIVED',
+}
+
+export enum LangEnum {
+  ru,
+  en,
+  uz,
+}
+
+export enum StatusCategory {
+  DEFAULT = 'DEFAULT',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+
+export enum StatusBrand {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}

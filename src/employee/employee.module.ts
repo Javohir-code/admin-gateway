@@ -5,7 +5,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { GRPC_WAREHOUSE_PACKAGE } from './constants';
 import { ownerMsUrl } from "../shared/constants/msUrls";
-console.log(ownerMsUrl);
 
 @Module({
   imports: [
