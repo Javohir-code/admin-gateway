@@ -5,9 +5,21 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DistrictModule } from './district/district.module';
 import { AppLoggerMiddleware } from './middlewares/request-logging';
+import { CompanyModule } from './company/company.module';
+import { AddressOwnerModule } from './addressOwner/addressOwner.module';
+import { EmployeeModule } from './employee/employee.module';
+import { WarehouseModule } from './warehouse/warehouse.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DistrictModule, RegionModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DistrictModule,
+    RegionModule,
+    CompanyModule,
+    AddressOwnerModule,
+    WarehouseModule,
+    EmployeeModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
