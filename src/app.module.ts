@@ -12,6 +12,7 @@ import { WarehouseModule } from './warehouse/warehouse.module';
 import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
 import { BrandModule } from './brand/brand.module';
+import { VariantFieldsModule } from './variantFields/variantFields.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { BrandModule } from './brand/brand.module';
     ProductModule,
     CategoryModule,
     BrandModule,
+    VariantFieldsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

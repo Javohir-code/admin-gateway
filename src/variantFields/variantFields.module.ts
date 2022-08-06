@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ProductController } from './product.controller';
+import { VariantFieldsController } from './variantFields.controller';
 import { HttpModule } from '@nestjs/axios';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -24,7 +24,7 @@ import { productMsUrl } from 'src/shared/constants/msUrls';
       },
     ]),
   ],
-  controllers: [ProductController],
+  controllers: [VariantFieldsController],
   providers: [],
 })
-export class ProductModule {}
+export class VariantFieldsModule {}

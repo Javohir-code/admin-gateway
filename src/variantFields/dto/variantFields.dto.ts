@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CompanyStatus } from '../../shared/enums/enum';
 import { IsOptional } from 'class-validator';
 
-export class ProductDto {
+export class VariantFieldsDto {
   @ApiProperty()
   @IsOptional()
   name: string;
