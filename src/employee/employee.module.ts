@@ -4,7 +4,7 @@ import { HttpModule } from '@nestjs/axios';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { GRPC_WAREHOUSE_PACKAGE } from './constants';
-import { ownerMsUrl } from "../shared/constants/msUrls";
+import { ownerMsUrl } from '../shared/constants/msUrls';
 
 @Module({
   imports: [
@@ -15,7 +15,10 @@ import { ownerMsUrl } from "../shared/constants/msUrls";
         transport: Transport.GRPC,
         options: {
           package: 'company',
-          protoPath: join(process.cwd(), '../helper-proto/company.proto'),
+          protoPath: join(
+            process.cwd(),
+            'node_modules/@padishah/toolbox/grpc/company.proto',
+          ),
           url: ownerMsUrl,
           loader: {
             objects: true,
@@ -27,4 +30,4 @@ import { ownerMsUrl } from "../shared/constants/msUrls";
   controllers: [EmployeeController],
   providers: [],
 })
-export class EmployeeModule {}
+export class EmployeeModule { }
