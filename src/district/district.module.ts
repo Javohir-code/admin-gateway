@@ -1,3 +1,4 @@
+import { helperMsUrl } from './../shared/constants/msUrls';
 import { Module } from '@nestjs/common';
 import { DistrictController } from './district.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -13,6 +14,7 @@ import { GRPC_DISTRICT_PACKAGE } from './constants';
         options: {
           package: 'app',
           protoPath: join(process.cwd(), '../helper-proto/app.proto'),
+          url: helperMsUrl,
           loader: {
             objects: true,
           },
