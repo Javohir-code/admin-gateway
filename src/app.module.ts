@@ -13,9 +13,12 @@ import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
 import { BrandModule } from './brand/brand.module';
 import { VariantFieldsModule } from './variantFields/variantFields.module';
+import { UserModule } from './user/user.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    JwtModule.register({}),
     ConfigModule.forRoot(),
     DistrictModule,
     RegionModule,
@@ -27,6 +30,7 @@ import { VariantFieldsModule } from './variantFields/variantFields.module';
     CategoryModule,
     BrandModule,
     VariantFieldsModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
