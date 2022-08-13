@@ -4,7 +4,7 @@ import { HttpModule } from '@nestjs/axios';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { GRPC_WAREHOUSE_PACKAGE } from './constants';
-import { ownerMsUrl } from "../shared/constants/msUrls";
+import { ownerMsUrl } from '../shared/constants/msUrls';
 
 @Module({
   imports: [
