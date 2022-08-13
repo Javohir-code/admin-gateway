@@ -15,7 +15,10 @@ import { ownerMsUrl } from 'src/shared/constants/msUrls';
         transport: Transport.GRPC,
         options: {
           package: 'company',
-          protoPath: join(process.cwd(), '../helper-proto/company.proto'),
+          protoPath: join(
+            process.cwd(),
+            'node_modules/@padishah/toolbox/grpc/company.proto',
+          ),
           url: ownerMsUrl,
           loader: {
             objects: true,
@@ -27,4 +30,4 @@ import { ownerMsUrl } from 'src/shared/constants/msUrls';
   controllers: [CompanyController],
   providers: [],
 })
-export class CompanyModule {}
+export class CompanyModule { }

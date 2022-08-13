@@ -15,7 +15,10 @@ import { productMsUrl } from 'src/shared/constants/msUrls';
         transport: Transport.GRPC,
         options: {
           package: 'product',
-          protoPath: join(process.cwd(), '../helper-proto/product.proto'),
+          protoPath: join(
+            process.cwd(),
+            'node_modules/@padishah/toolbox/grpc/product.proto',
+          ),
           url: productMsUrl,
           loader: {
             objects: true,
@@ -27,4 +30,4 @@ import { productMsUrl } from 'src/shared/constants/msUrls';
   controllers: [BrandController],
   providers: [],
 })
-export class BrandModule {}
+export class BrandModule { }
