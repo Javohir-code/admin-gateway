@@ -32,7 +32,6 @@ export class CategoryController implements OnModuleInit {
   onModuleInit() {
     this.categoryService =
       this.client.getService<CategoryControllerInterface>('CategoryService');
-    console.log(this.categoryService);
   }
 
   @Get('/getAll')
@@ -43,7 +42,18 @@ export class CategoryController implements OnModuleInit {
   ): Promise<CategoryDto> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.categoryService.GetCategories(body, metadata));
+    return lastValueFrom(
+      this.categoryService.GetCategories(body, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
   }
 
   @Get('/getOne/:id')
@@ -56,7 +66,16 @@ export class CategoryController implements OnModuleInit {
     metadata.add('lang', `${lang}`);
     return lastValueFrom(
       this.categoryService.GetCategory({ id, ...body }, metadata),
-    );
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
   }
 
   @Post('/addNew')
@@ -67,7 +86,16 @@ export class CategoryController implements OnModuleInit {
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.categoryService.AddNew(body));
+    return lastValueFrom(this.categoryService.AddNew(body)).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
   }
 
   @Put('/update/:id')
@@ -78,7 +106,14 @@ export class CategoryController implements OnModuleInit {
   ): Promise<any> {
     return lastValueFrom(this.categoryService.Update({ id, ...body })).catch(
       (e) => {
-        console.log(e);
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'error',
+            message: e.message,
+          },
+          HttpStatus.NOT_FOUND,
+        );
       },
     );
   }
