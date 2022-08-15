@@ -76,7 +76,11 @@ export class CategoryController implements OnModuleInit {
     @Param('id') id: number,
     @Body() body: CategoryDto,
   ): Promise<any> {
-    return lastValueFrom(this.categoryService.Update({ id, company: body }));
+    return lastValueFrom(this.categoryService.Update({ id, ...body })).catch(
+      (e) => {
+        console.log(e);
+      },
+    );
   }
 
   @Delete('/delete/:id')
