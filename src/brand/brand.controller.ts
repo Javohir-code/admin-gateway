@@ -42,7 +42,16 @@ export class BrandController implements OnModuleInit {
   ): Promise<BrandDto> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.branService.GetAll(body, metadata));
+    return lastValueFrom(this.branService.GetAll(body, metadata)).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
   }
 
   @Get('/getOne/:id')
@@ -53,7 +62,18 @@ export class BrandController implements OnModuleInit {
   ): Promise<BrandDto> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.branService.GetOne({ id, ...body }, metadata));
+    return lastValueFrom(
+      this.branService.GetOne({ id, ...body }, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
   }
 
   @Post('/addNew')
@@ -64,13 +84,35 @@ export class BrandController implements OnModuleInit {
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.branService.AddNew({ data: body }, metadata));
+    return lastValueFrom(
+      this.branService.AddNew({ data: body }, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
   }
 
   @Put('/update/:id')
   @ApiResponse({ type: BrandDto })
   async Update(@Param('id') id: number, @Body() body: any): Promise<any> {
-    return lastValueFrom(this.branService.Update({ id, data: body }));
+    return lastValueFrom(this.branService.Update({ id, data: body })).catch(
+      (e) => {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'error',
+            message: e.message,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      },
+    );
   }
 
   @Delete('/delete/:id')
