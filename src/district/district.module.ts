@@ -13,7 +13,10 @@ import { GRPC_DISTRICT_PACKAGE } from './constants';
         transport: Transport.GRPC,
         options: {
           package: 'app',
-          protoPath: join(process.cwd(), '../helper-proto/app.proto'),
+          protoPath: join(
+            process.cwd(),
+            'node_modules/@padishah/toolbox/grpc/app.proto',
+          ),
           url: helperMsUrl,
           loader: {
             objects: true,
@@ -25,4 +28,4 @@ import { GRPC_DISTRICT_PACKAGE } from './constants';
   controllers: [DistrictController],
   providers: [],
 })
-export class DistrictModule {}
+export class DistrictModule { }
