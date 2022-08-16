@@ -13,6 +13,8 @@ import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
 import { BrandModule } from './brand/brand.module';
 import { VariantFieldsModule } from './variantFields/variantFields.module';
+import { OrderModule } from './order/order.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { VariantFieldsModule } from './variantFields/variantFields.module';
     CategoryModule,
     BrandModule,
     VariantFieldsModule,
+    OrderModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

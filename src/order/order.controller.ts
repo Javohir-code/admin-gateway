@@ -12,48 +12,48 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CategoryControllerInterface } from './interfaces/category.interface';
-import { GRPC_PRODUCT_PACKAGE } from './constants';
+import { OrderControllerInterface } from './interfaces/order.interface';
+import { GRPC_ORDER_PACKAGE } from './constants';
 import { ClientGrpc } from '@nestjs/microservices';
 import { ApiResponse } from '@nestjs/swagger';
-import { CategoryDto } from './dto/category.dto';
+import { OrderDto } from './dto/order.dto';
 import { lastValueFrom } from 'rxjs';
 import { GetAllDto } from './dto/get.all.dto';
 import { GetOneDto } from './dto/get.one.dto';
 import { LangEnum } from '../shared/enums/enum';
 import { Metadata } from '@grpc/grpc-js';
 
-@Controller('category')
-export class CategoryController implements OnModuleInit {
-  private categoryService: CategoryControllerInterface;
+@Controller('order')
+export class OrderController implements OnModuleInit {
+  private shopService: OrderControllerInterface;
 
-  constructor(@Inject(GRPC_PRODUCT_PACKAGE) private client: ClientGrpc) {}
+  constructor(@Inject(GRPC_ORDER_PACKAGE) private client: ClientGrpc) {}
 
   onModuleInit() {
-    this.categoryService =
-      this.client.getService<CategoryControllerInterface>('CategoryService');
+    this.shopService =
+      this.client.getService<OrderControllerInterface>('ShopService');
   }
 
   @Get('/getAll')
-  @ApiResponse({ type: [CategoryDto] })
+  @ApiResponse({ type: [OrderDto] })
   async getAll(
     @Body() body: GetAllDto,
     @Headers('lang') lang: LangEnum,
-  ): Promise<CategoryDto> {
+  ): Promise<OrderDto> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(
-      this.categoryService.GetCategories(body, metadata),
-    ).catch((e) => {
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.NOT_FOUND,
-          error: 'error',
-          message: e.message,
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    });
+    return lastValueFrom(this.shopService.GetOrders(body, metadata)).catch(
+      (e) => {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'error',
+            message: e.message,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      },
+    );
   }
 
   @Get('/getOne/:id')
@@ -61,11 +61,11 @@ export class CategoryController implements OnModuleInit {
     @Param('id') id: string,
     @Body() body: GetOneDto,
     @Headers('lang') lang?: LangEnum,
-  ): Promise<CategoryDto> {
+  ): Promise<OrderDto> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
     return lastValueFrom(
-      this.categoryService.GetCategory({ id, ...body }, metadata),
+      this.shopService.GetOrder({ id, ...body }, metadata),
     ).catch((e) => {
       throw new HttpException(
         {
@@ -79,14 +79,14 @@ export class CategoryController implements OnModuleInit {
   }
 
   @Post('/addNew')
-  @ApiResponse({ type: [CategoryDto] })
+  @ApiResponse({ type: [OrderDto] })
   async AddNew(
     @Body() body?: any,
     @Headers('lang') lang?: LangEnum,
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.categoryService.AddNew(body)).catch((e) => {
+    return lastValueFrom(this.shopService.AddNew(body)).catch((e) => {
       throw new HttpException(
         {
           statusCode: HttpStatus.NOT_FOUND,
@@ -99,12 +99,9 @@ export class CategoryController implements OnModuleInit {
   }
 
   @Put('/update/:id')
-  @ApiResponse({ type: CategoryDto })
-  async Update(
-    @Param('id') id: number,
-    @Body() body: CategoryDto,
-  ): Promise<any> {
-    return lastValueFrom(this.categoryService.Update({ id, ...body })).catch(
+  @ApiResponse({ type: OrderDto })
+  async Update(@Param('id') id: number, @Body() body: OrderDto): Promise<any> {
+    return lastValueFrom(this.shopService.Update({ id, ...body })).catch(
       (e) => {
         throw new HttpException(
           {
@@ -121,7 +118,7 @@ export class CategoryController implements OnModuleInit {
   @Delete('/delete/:id')
   @ApiResponse({})
   async Delete(@Param('id') id: number): Promise<any> {
-    return lastValueFrom(this.categoryService.Delete({ id })).catch((r) => {
+    return lastValueFrom(this.shopService.Delete({ id })).catch((r) => {
       throw new HttpException(
         {
           statusCode: HttpStatus.NOT_FOUND,
