@@ -28,4 +28,4 @@ import { GRPC_REGION_PACKAGE } from './constants';
   controllers: [RegionController],
   providers: [],
 })
-export class RegionModule { }
+export class RegionModule {}

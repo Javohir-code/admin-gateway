@@ -11,4 +11,5 @@ export interface UsersControllerInterface {
   GetUserByMsisdn(data: any): Observable<any>;
   AssignRole(data: any): Observable<any>;
   GetRoles(): Observable<any>;
+  UpdateStatus(data: any): Observable<any>;
 }

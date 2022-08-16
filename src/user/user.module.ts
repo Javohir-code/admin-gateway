@@ -18,7 +18,10 @@ import { UserController } from './user.controller';
         transport: Transport.GRPC,
         options: {
           package: 'user',
-          protoPath: join(process.cwd(), '../helper-proto/user.proto'),
+          protoPath: join(
+            process.cwd(),
+            'node_modules/@padishah/toolbox/grpc/user.proto',
+          ),
           url: userMsUrl,
           loader: {
             objects: true,

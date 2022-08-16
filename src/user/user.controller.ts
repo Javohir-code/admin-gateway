@@ -118,10 +118,15 @@ export class UserController implements OnModuleInit {
     return lastValueFrom(this.usersService.AssignRole({ role: data }));
   }
 
-  @Get('roles-list')
+  @Get('list/roles')
   @UseGuards(AtAuthGuard)
-  @HttpCode(HttpStatus.OK)
   async getRoles(): Promise<any> {
     return lastValueFrom(this.usersService.GetRoles());
+  }
+
+  @Put('user-status')
+  @UseGuards(AtAuthGuard)
+  async updateStatus(@Body() data: any): Promise<any> {
+    return lastValueFrom(this.usersService.UpdateStatus({ user: data }));
   }
 }
