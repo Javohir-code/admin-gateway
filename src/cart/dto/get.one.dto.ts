@@ -1,8 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 
-export class OrderDto {
+export class GetOneDto {
   @ApiProperty()
   @IsOptional()
-  name: string;
+  variantValues: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  variantFields: boolean;
 }
