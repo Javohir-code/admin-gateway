@@ -793,10 +793,10 @@
     consola "^2.15.0"
     node-fetch "^2.6.1"
 
-"@padishah/toolbox@^0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@padishah/toolbox/-/toolbox-0.0.15.tgz#40689fa5b7200ab7c4051395d83ec928d15794f4"
-  integrity sha512-UUDvuHgL3jCzFiFxs3BER4DJsKootBwO1ZFu99obz0QKGGobJmfEpegIbu+U79xX+7Y4fJeTMRyACOQk8EVE4A==
+"@padishah/toolbox@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@padishah/toolbox/-/toolbox-0.0.16.tgz#30c145b76ee1e5b4d2b73c1dbedafef357427417"
+  integrity sha512-LEVUL7jSKWhi0CohkJCA3KIA+iinzQ47nLctIV3g+KXuPqpT2ZiqgH+mLhdljiavkvkkKEryLFG3kSQDDBzHMw==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"

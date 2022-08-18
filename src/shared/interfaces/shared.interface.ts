@@ -4,6 +4,13 @@ export interface Translation {
   };
 }
 
+export interface TranslationPage {
+  [key: string]: {
+    title: string;
+    content: string;
+  };
+}
+
 export interface ParamsId {
   id: string;
 }
