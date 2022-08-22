@@ -129,4 +129,15 @@ export class UserController implements OnModuleInit {
   async updateStatus(@Body() data: any): Promise<any> {
     return lastValueFrom(this.usersService.UpdateStatus({ user: data }));
   }
+
+  @Post('login/password')
+  @HttpCode(HttpStatus.OK)
+  async loginWithPassword(@Body() data: any): Promise<any> {
+    return lastValueFrom(
+      this.usersService.LoginWithPassword({
+        login: data.login,
+        password: data.password,
+      }),
+    );
+  }
 }
