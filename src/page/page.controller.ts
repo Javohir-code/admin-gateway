@@ -55,7 +55,6 @@ export class PageController implements OnModuleInit {
   @ApiResponse({ type: Page })
   @Get('/:id')
   async getOne(@Param('id') id: string): Promise<Page> {
-    console.log(id);
     const response = await lastValueFrom(this.regionService.FindById({ id }));
     return {
       ...response,

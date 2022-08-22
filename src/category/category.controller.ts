@@ -22,6 +22,8 @@ import { GetAllDto } from './dto/get.all.dto';
 import { GetOneDto } from './dto/get.one.dto';
 import { LangEnum } from '../shared/enums/enum';
 import { Metadata } from '@grpc/grpc-js';
+import { getField, jsonValueToProto, structProtoToJson } from '../shared/utils';
+import * as _ from 'lodash';
 
 @Controller('category')
 export class CategoryController implements OnModuleInit {
@@ -39,10 +41,10 @@ export class CategoryController implements OnModuleInit {
   async getAll(
     @Body() body: GetAllDto,
     @Headers('lang') lang: LangEnum,
-  ): Promise<CategoryDto> {
+  ): Promise<{ data: CategoryDto[] }> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(
+    const response = await lastValueFrom(
       this.categoryService.GetCategories(body, metadata),
     ).catch((e) => {
       throw new HttpException(
@@ -54,6 +56,32 @@ export class CategoryController implements OnModuleInit {
         HttpStatus.NOT_FOUND,
       );
     });
+    return response;
+  }
+
+  @Get('/tree')
+  @ApiResponse({ type: [CategoryDto] })
+  async getTree(@Headers('lang') lang: LangEnum): Promise<any> {
+    const metadata = new Metadata();
+    metadata.add('lang', `${lang}`);
+    const response = await lastValueFrom(
+      this.categoryService.GetTreeCategory({}, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    // const a = response.map((r) => {
+    //   return jsonToStructProto(r);
+    // });
+    return {
+      data: _.values(structProtoToJson(response.data)),
+    };
   }
 
   @Get('/getOne/:id')
@@ -61,10 +89,10 @@ export class CategoryController implements OnModuleInit {
     @Param('id') id: string,
     @Body() body: GetOneDto,
     @Headers('lang') lang?: LangEnum,
-  ): Promise<CategoryDto> {
+  ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(
+    const response = await lastValueFrom(
       this.categoryService.GetCategory({ id, ...body }, metadata),
     ).catch((e) => {
       throw new HttpException(
@@ -76,6 +104,12 @@ export class CategoryController implements OnModuleInit {
         HttpStatus.NOT_FOUND,
       );
     });
+    return {
+      data: {
+        ...response.data,
+        translation: structProtoToJson(getField(response.data, 'translation')),
+      },
+    };
   }
 
   @Post('/addNew')
@@ -86,7 +120,12 @@ export class CategoryController implements OnModuleInit {
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.categoryService.AddNew(body)).catch((e) => {
+
+    const oldTranslation = body.translation;
+    body.translation = jsonValueToProto(body.translation).structValue;
+    const response = await lastValueFrom(
+      this.categoryService.AddNew({ ...body }),
+    ).catch((e) => {
       throw new HttpException(
         {
           statusCode: HttpStatus.NOT_FOUND,
@@ -96,26 +135,34 @@ export class CategoryController implements OnModuleInit {
         HttpStatus.NOT_FOUND,
       );
     });
+
+    response.translation = oldTranslation;
+
+    return response;
   }
 
   @Put('/update/:id')
   @ApiResponse({ type: CategoryDto })
-  async Update(
-    @Param('id') id: number,
-    @Body() body: CategoryDto,
-  ): Promise<any> {
-    return lastValueFrom(this.categoryService.Update({ id, ...body })).catch(
-      (e) => {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'error',
-            message: e.message,
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      },
-    );
+  async Update(@Param('id') id: number, @Body() body: any): Promise<any> {
+    const oldTranslation = body.translation;
+    body.translation = jsonValueToProto(body.translation).structValue;
+    console.log(body);
+    const response = await lastValueFrom(
+      this.categoryService.Update({ id, ...body }),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+
+    response.data.translation = oldTranslation;
+
+    return response;
   }
 
   @Delete('/delete/:id')
