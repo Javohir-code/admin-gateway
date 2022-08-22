@@ -67,7 +67,7 @@ export const valueProtoToJson = (proto) => {
     if (!proto.listValue || !proto.listValue.values) {
       console.warn('Invalid JSON list value proto: ', JSON.stringify(proto));
     }
-    return proto.listValue.values.map(valueProtoToJson);
+    return proto.listValue.values?.map(valueProtoToJson);
   } else if (kind === 'structValue') {
     return structProtoToJson(proto.structValue);
   } else {
@@ -75,3 +75,7 @@ export const valueProtoToJson = (proto) => {
     return null;
   }
 };
+
+export function getField(data, fliedName) {
+  return data[fliedName];
+}

@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config({ path: '.env' });
 
-// console.log("asddddddddddddddddddd",process.env.OWNER_MS_URl)
 export const ownerMsUrl = process.env.OWNER_MS_URl;
 export const productMsUrl = process.env.PRODUCT_MS_URl;
 export const helperMsUrl = process.env.HELPER_MS_URl;

@@ -13,6 +13,9 @@ import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
 import { BrandModule } from './brand/brand.module';
 import { VariantFieldsModule } from './variantFields/variantFields.module';
+import { OrderModule } from './order/order.module';
+import { CartModule } from './cart/cart.module';
+import { PageModule } from './page/page.module';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -30,7 +33,6 @@ import { JwtModule } from '@nestjs/jwt';
     CategoryModule,
     BrandModule,
     VariantFieldsModule,
-    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,0 +1,13 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  only:
+  - production
+  script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - ssh -o StrictHostKeyChecking=no ubuntu@$INSTANCE_ADDRESS 'rm -rf admin-gateway; git clone --branch production git@gitlab.com:padishah/admin-gateway.git'
+    - ssh -o StrictHostKeyChecking=no ubuntu@$INSTANCE_ADDRESS 'cd admin-gateway; npm install; sudo systemctl restart app.service'
