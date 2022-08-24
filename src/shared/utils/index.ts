@@ -79,3 +79,13 @@ export const valueProtoToJson = (proto) => {
 export function getField(data, fliedName) {
   return data[fliedName];
 }
+
+export function translationMapper(data) {
+  let t = {};
+  if (data?.translation && Object.keys(data?.translation).length > 0) {
+    t = { translation: jsonToStructProto(data?.translation) };
+  }
+  return {
+    ...t,
+  };
+}
