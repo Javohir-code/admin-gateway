@@ -76,9 +76,6 @@ export class CategoryController implements OnModuleInit {
         HttpStatus.NOT_FOUND,
       );
     });
-    // const a = response.map((r) => {
-    //   return jsonToStructProto(r);
-    // });
     return {
       data: _.values(structProtoToJson(response.data)),
     };
