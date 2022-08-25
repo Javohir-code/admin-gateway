@@ -89,3 +89,19 @@ export function translationMapper(data) {
     ...t,
   };
 }
+
+export function getQuery(data = {}, fields: Array<string> = []) {
+  const result = {};
+  fields
+    .map((r) => {
+      result[r] = data[r];
+      delete data[r];
+    })
+    .filter((r) => {
+      return r !== undefined && (r + '').length !== 0;
+    });
+  return {
+    ...data,
+    where: result,
+  };
+}

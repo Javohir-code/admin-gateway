@@ -11,6 +11,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CategoryControllerInterface } from './interfaces/category.interface';
 import { GRPC_PRODUCT_PACKAGE } from './constants';
@@ -22,7 +23,12 @@ import { GetAllDto } from './dto/get.all.dto';
 import { GetOneDto } from './dto/get.one.dto';
 import { LangEnum } from '../shared/enums/enum';
 import { Metadata } from '@grpc/grpc-js';
-import { getField, jsonValueToProto, structProtoToJson } from '../shared/utils';
+import {
+  getField,
+  getQuery,
+  jsonValueToProto,
+  structProtoToJson,
+} from '../shared/utils';
 import * as _ from 'lodash';
 
 @Controller('category')
@@ -39,13 +45,25 @@ export class CategoryController implements OnModuleInit {
   @Get('/getAll')
   @ApiResponse({ type: [CategoryDto] })
   async getAll(
-    @Body() body: GetAllDto,
+    @Query() query: GetAllDto,
+    // @Body() body: GetAllDto,
     @Headers('lang') lang: LangEnum,
   ): Promise<{ data: CategoryDto[] }> {
+    const changedQuery = getQuery(query, [
+      'height',
+      'id',
+      'image',
+      'length',
+      'status',
+      'weight',
+      'width',
+      'parentId',
+    ]);
+    console.log(changedQuery);
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
     const response = await lastValueFrom(
-      this.categoryService.GetCategories(body, metadata),
+      this.categoryService.GetCategories(changedQuery, metadata),
     ).catch((e) => {
       throw new HttpException(
         {
@@ -84,13 +102,13 @@ export class CategoryController implements OnModuleInit {
   @Get('/getOne/:id')
   async getOne(
     @Param('id') id: string,
-    @Body() body: GetOneDto,
+    @Query() query: GetOneDto,
     @Headers('lang') lang?: LangEnum,
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
     const response = await lastValueFrom(
-      this.categoryService.GetCategory({ id, ...body }, metadata),
+      this.categoryService.GetCategory({ id, ...query }, metadata),
     ).catch((e) => {
       throw new HttpException(
         {

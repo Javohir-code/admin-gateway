@@ -11,6 +11,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ProductControllerInterface } from './interfaces/product.interface';
 import { GRPC_PRODUCT_PACKAGE } from './constants';
@@ -38,9 +39,11 @@ export class ProductController implements OnModuleInit {
   @Get('/getAll')
   @ApiResponse({ type: [ProductDto] })
   async getAll(
+    @Query() query: any,
     @Body() body: GetAllDto,
     @Headers('lang') lang: LangEnum,
   ): Promise<{ data: ProductDto[] }> {
+    console.log(query);
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
     return lastValueFrom(this.productService.GetAll(body, metadata)).catch(
