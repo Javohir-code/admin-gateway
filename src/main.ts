@@ -1,20 +1,22 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import * as cors from "cors";
+import * as cors from 'cors';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const port = process.env.PORT || 83;
   const app = await NestFactory.create(AppModule, {
-      cors: true
-    });
-    app.use(cors({
-      origin: "*",
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    cors: true,
+  });
+  app.use(
+    cors({
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       preflightContinue: false,
-      optionsSuccessStatus: 204
-    }));
+      optionsSuccessStatus: 204,
+    }),
+  );
   const config = new DocumentBuilder()
     .setTitle('Test Service')
     .setDescription('The API description')
