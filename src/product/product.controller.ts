@@ -43,7 +43,6 @@ export class ProductController implements OnModuleInit {
     @Body() body: GetAllDto,
     @Headers('lang') lang: LangEnum,
   ): Promise<{ data: ProductDto[] }> {
-    console.log(query);
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
     return lastValueFrom(this.productService.GetAll(body, metadata)).catch(
@@ -94,22 +93,22 @@ export class ProductController implements OnModuleInit {
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    const brand = body.brand?.create;
-    if (Object.keys(brand || {}).length > 0) {
-      body.brand.create = {
-        ...brand,
-        ...translationMapper(brand),
-      };
-    }
-    body.categories = body.categories?.map((r) => {
-      if (r.create && Object.keys(r.create).length > 0) {
-        return {
-          ...r,
-          ...translationMapper(brand),
-        };
-      }
-      return r;
-    });
+    // const brand = body.brand?.create;
+    // if (Object.keys(brand || {}).length > 0) {
+    //   body.brand.create = {
+    //     ...brand,
+    //     ...translationMapper(brand),
+    //   };
+    // }
+    // body.categories = body.categories?.map((r) => {
+    //   if (r.create && Object.keys(r.create).length > 0) {
+    //     return {
+    //       ...r,
+    //       ...translationMapper(brand),
+    //     };
+    //   }
+    //   return r;
+    // });
     body = {
       ...body,
       ...translationMapper(body),

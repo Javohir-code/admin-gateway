@@ -804,10 +804,10 @@
     consola "^2.15.0"
     node-fetch "^2.6.1"
 
-"@padishah/toolbox@^0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@padishah/toolbox/-/toolbox-0.0.31.tgz#b2eac187cfbd2810fcb0b2fb9971af19bd9fcaa1"
-  integrity sha512-SrY2N6ku+RN0duvavPG/Y2KsBXkr/ir/deLEm7Oie0+G0fYBBFlsayY9+q/fYEAG1M1BaG3VPibXzkgwwmJIOw==
+"@padishah/toolbox@^0.0.35":
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/@padishah/toolbox/-/toolbox-0.0.35.tgz#1b0b3de700d4104da5b5f4be472f744c8f779f15"
+  integrity sha512-pN+CUfsB+AZZr3LudnL10htZfPPVMzVPzVOklWw1SJZy43hje2OL1KNS7Rht5oTgeMYbM9XeR5o8WdGHC1IcAg==
   dependencies:
     aws-sdk "^2.1201.0"
 
