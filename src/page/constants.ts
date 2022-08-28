@@ -1,0 +1,1 @@
+export const GRPC_PAGE_PACKAGE = 'PAGE_PACKAGE';

@@ -22,6 +22,7 @@ import { GetAllDto } from './dto/get.all.dto';
 import { GetOneDto } from './dto/get.one.dto';
 import { LangEnum } from '../shared/enums/enum';
 import { Metadata } from '@grpc/grpc-js';
+import { jsonToStructProto, structProtoToJson } from '../shared/utils';
 
 @Controller('brand')
 export class BrandController implements OnModuleInit {
@@ -39,10 +40,29 @@ export class BrandController implements OnModuleInit {
   async getAll(
     @Body() body: GetAllDto,
     @Headers('lang') lang: LangEnum,
-  ): Promise<BrandDto> {
+  ): Promise<{ data: any }> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.branService.GetAll(body, metadata));
+    const response = await lastValueFrom(
+      this.branService.GetAll(body, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    return response;
+    // console.log(response);
+    // return {
+    //   data: response.data.map((r) => {
+    //     r.translation = undefined;
+    //     return r;
+    //   }),
+    // };
   }
 
   @Get('/getOne/:id')
@@ -50,10 +70,30 @@ export class BrandController implements OnModuleInit {
     @Param('id') id: string,
     @Body() body: GetOneDto,
     @Headers('lang') lang?: LangEnum,
-  ): Promise<BrandDto> {
+  ): Promise<{ data: BrandDto }> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.branService.GetOne({ id, ...body }, metadata));
+    const response = await lastValueFrom(
+      this.branService.GetOne({ id, ...body }, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    // try {
+    //   response.data.tanslation = structProtoToJson(response.data.tanslation);
+    // } catch (e) {}
+    return {
+      data: {
+        ...response.data,
+        translation: structProtoToJson(response.data?.translation),
+      },
+    };
   }
 
   @Post('/addNew')
@@ -64,13 +104,82 @@ export class BrandController implements OnModuleInit {
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.branService.AddNew({ data: body }, metadata));
+    const oldTranslation = body.translation;
+    body.translation = jsonToStructProto(body.translation);
+    const response = await lastValueFrom(
+      this.branService.AddNew(
+        {
+          data: body,
+        },
+        metadata,
+      ),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+
+    return {
+      data: {
+        ...response.data,
+        translation: oldTranslation,
+      },
+    };
   }
 
   @Put('/update/:id')
   @ApiResponse({ type: BrandDto })
-  async Update(@Param('id') id: number, @Body() body: any): Promise<any> {
-    return lastValueFrom(this.branService.Update({ id, data: body }));
+  async Update(
+    @Param('id') id: number,
+    @Body() body: any,
+    @Headers('lang') lang?: LangEnum,
+  ): Promise<any> {
+    const metadata = new Metadata();
+    metadata.add('lang', `${lang}`);
+    const oldTranslation = body.translation;
+    body.translation = jsonToStructProto(body.translation);
+    const response = await lastValueFrom(
+      this.branService.Update(
+        {
+          id,
+          data: body,
+        },
+        metadata,
+      ),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+
+    return {
+      data: {
+        ...response.data,
+        translation: oldTranslation,
+      },
+    };
+    // return lastValueFrom(this.branService.Update({ id, data: body })).catch(
+    //   (e) => {
+    //     throw new HttpException(
+    //       {
+    //         statusCode: HttpStatus.NOT_FOUND,
+    //         error: 'error',
+    //         message: e.message,
+    //       },
+    //       HttpStatus.NOT_FOUND,
+    //     );
+    //   },
+    // );
   }
 
   @Delete('/delete/:id')

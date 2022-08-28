@@ -1,15 +1,15 @@
-import { helperMsUrl } from './../shared/constants/msUrls';
+import { helperMsUrl } from '../shared/constants/msUrls';
 import { Module } from '@nestjs/common';
-import { RegionController } from './region.controller';
+import { PageController } from './page.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { GRPC_REGION_PACKAGE } from './constants';
+import { GRPC_PAGE_PACKAGE } from './constants';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: GRPC_REGION_PACKAGE,
+        name: GRPC_PAGE_PACKAGE,
         transport: Transport.GRPC,
         options: {
           package: 'app',
@@ -25,7 +25,7 @@ import { GRPC_REGION_PACKAGE } from './constants';
       },
     ]),
   ],
-  controllers: [RegionController],
+  controllers: [PageController],
   providers: [],
 })
-export class RegionModule {}
+export class PageModule {}

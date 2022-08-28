@@ -67,7 +67,7 @@ export const valueProtoToJson = (proto) => {
     if (!proto.listValue || !proto.listValue.values) {
       console.warn('Invalid JSON list value proto: ', JSON.stringify(proto));
     }
-    return proto.listValue.values.map(valueProtoToJson);
+    return proto.listValue.values?.map(valueProtoToJson);
   } else if (kind === 'structValue') {
     return structProtoToJson(proto.structValue);
   } else {
@@ -75,3 +75,37 @@ export const valueProtoToJson = (proto) => {
     return null;
   }
 };
+
+export function getField(data, fliedName) {
+  let a = null;
+  try {
+    a = data[fliedName];
+  } catch (e) {}
+  return a;
+}
+
+export function translationMapper(data) {
+  let t = {};
+  if (data?.translation && Object.keys(data?.translation).length > 0) {
+    t = { translation: jsonToStructProto(data?.translation) };
+  }
+  return {
+    ...t,
+  };
+}
+
+export function getQuery(data = {}, fields: Array<string> = []) {
+  const result = {};
+  fields
+    .map((r) => {
+      result[r] = data[r];
+      delete data[r];
+    })
+    .filter((r) => {
+      return r !== undefined && (r + '').length !== 0;
+    });
+  return {
+    ...data,
+    where: result,
+  };
+}

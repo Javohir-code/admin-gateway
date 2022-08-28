@@ -1,25 +1,25 @@
 import { Module } from '@nestjs/common';
-import { CategoryController } from './category.controller';
+import { OrderController } from './order.controller';
 import { HttpModule } from '@nestjs/axios';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { GRPC_PRODUCT_PACKAGE } from './constants';
-import { productMsUrl } from 'src/shared/constants/msUrls';
+import { GRPC_ORDER_PACKAGE } from './constants';
+import { shopMsUrl } from 'src/shared/constants/msUrls';
 
 @Module({
   imports: [
     HttpModule,
     ClientsModule.register([
       {
-        name: GRPC_PRODUCT_PACKAGE,
+        name: GRPC_ORDER_PACKAGE,
         transport: Transport.GRPC,
         options: {
-          package: 'product',
+          package: 'shop',
           protoPath: join(
             process.cwd(),
-            'node_modules/@padishah/toolbox/grpc/product.proto',
+            'node_modules/@padishah/toolbox/grpc/shop.proto',
           ),
-          url: productMsUrl,
+          url: shopMsUrl,
           loader: {
             objects: true,
           },
@@ -27,7 +27,7 @@ import { productMsUrl } from 'src/shared/constants/msUrls';
       },
     ]),
   ],
-  controllers: [CategoryController],
+  controllers: [OrderController],
   providers: [],
 })
-export class CategoryModule {}
+export class OrderModule {}

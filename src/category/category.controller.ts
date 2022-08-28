@@ -11,6 +11,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CategoryControllerInterface } from './interfaces/category.interface';
 import { GRPC_PRODUCT_PACKAGE } from './constants';
@@ -22,6 +23,13 @@ import { GetAllDto } from './dto/get.all.dto';
 import { GetOneDto } from './dto/get.one.dto';
 import { LangEnum } from '../shared/enums/enum';
 import { Metadata } from '@grpc/grpc-js';
+import {
+  getField,
+  getQuery,
+  jsonValueToProto,
+  structProtoToJson,
+} from '../shared/utils';
+import * as _ from 'lodash';
 
 @Controller('category')
 export class CategoryController implements OnModuleInit {
@@ -32,31 +40,90 @@ export class CategoryController implements OnModuleInit {
   onModuleInit() {
     this.categoryService =
       this.client.getService<CategoryControllerInterface>('CategoryService');
-    console.log(this.categoryService);
   }
 
   @Get('/getAll')
   @ApiResponse({ type: [CategoryDto] })
   async getAll(
-    @Body() body: GetAllDto,
+    @Query() query: GetAllDto,
+    // @Body() body: GetAllDto,
     @Headers('lang') lang: LangEnum,
-  ): Promise<CategoryDto> {
+  ): Promise<{ data: CategoryDto[] }> {
+    const changedQuery = getQuery(query, [
+      'height',
+      'id',
+      'image',
+      'length',
+      'status',
+      'weight',
+      'width',
+      'parentId',
+    ]);
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.categoryService.GetCategories(body, metadata));
+    const response = await lastValueFrom(
+      this.categoryService.GetCategories(changedQuery, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    return response;
+  }
+
+  @Get('/tree')
+  @ApiResponse({ type: [CategoryDto] })
+  async getTree(@Headers('lang') lang: LangEnum): Promise<any> {
+    const metadata = new Metadata();
+    metadata.add('lang', `${lang}`);
+    const response = await lastValueFrom(
+      this.categoryService.GetTreeCategory({}, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    return {
+      data: _.values(structProtoToJson(response.data)),
+    };
   }
 
   @Get('/getOne/:id')
   async getOne(
     @Param('id') id: string,
-    @Body() body: GetOneDto,
+    @Query() query: GetOneDto,
     @Headers('lang') lang?: LangEnum,
-  ): Promise<CategoryDto> {
+  ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(
-      this.categoryService.GetCategory({ id, ...body }, metadata),
-    );
+    const response = await lastValueFrom(
+      this.categoryService.GetCategory({ id, ...query }, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    return {
+      data: {
+        ...response.data,
+        translation: structProtoToJson(getField(response.data, 'translation')),
+      },
+    };
   }
 
   @Post('/addNew')
@@ -67,16 +134,49 @@ export class CategoryController implements OnModuleInit {
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.categoryService.AddNew(body));
+
+    const oldTranslation = body.translation;
+    body.translation = jsonValueToProto(body.translation).structValue;
+    const response = await lastValueFrom(
+      this.categoryService.AddNew({ ...body }),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+
+    response.translation = oldTranslation;
+
+    return response;
   }
 
   @Put('/update/:id')
   @ApiResponse({ type: CategoryDto })
-  async Update(
-    @Param('id') id: number,
-    @Body() body: CategoryDto,
-  ): Promise<any> {
-    return lastValueFrom(this.categoryService.Update({ id, company: body }));
+  async Update(@Param('id') id: number, @Body() body: any): Promise<any> {
+    const oldTranslation = body.translation;
+    body.translation = jsonValueToProto(body.translation).structValue;
+    console.log(body);
+    const response = await lastValueFrom(
+      this.categoryService.Update({ id, ...body }),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+
+    response.data.translation = oldTranslation;
+
+    return response;
   }
 
   @Delete('/delete/:id')
