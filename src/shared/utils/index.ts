@@ -77,7 +77,11 @@ export const valueProtoToJson = (proto) => {
 };
 
 export function getField(data, fliedName) {
-  return data[fliedName];
+  let a = null;
+  try {
+    a = data[fliedName];
+  } catch (e) {}
+  return a;
 }
 
 export function translationMapper(data) {

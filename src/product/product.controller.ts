@@ -88,9 +88,11 @@ export class ProductController implements OnModuleInit {
         HttpStatus.NOT_FOUND,
       );
     });
+    console.log(data.data.variantFields);
     return {
       ...data?.data,
       translation: structProtoToJson(data?.data?.translation),
+      variantFields: _.values(structProtoToJson(data?.data?.variantFields)),
     };
   }
 
