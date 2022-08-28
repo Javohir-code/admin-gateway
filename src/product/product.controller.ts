@@ -24,6 +24,7 @@ import { GetOneDto } from './dto/get.one.dto';
 import { LangEnum } from '../shared/enums/enum';
 import { Metadata } from '@grpc/grpc-js';
 import { structProtoToJson, translationMapper } from '../shared/utils';
+import * as _ from 'lodash';
 
 @Controller('product')
 export class ProductController implements OnModuleInit {
@@ -45,18 +46,26 @@ export class ProductController implements OnModuleInit {
   ): Promise<{ data: ProductDto[] }> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.productService.GetAll(body, metadata)).catch(
-      (r) => {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'error',
-            message: r.message,
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      },
-    );
+    const response = await lastValueFrom(
+      this.productService.GetAll(body, metadata),
+    ).catch((r) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: r.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    return {
+      data: response.data.map((r) => {
+        return {
+          ...r,
+          variantFields: _.values(structProtoToJson(r.variantFields)),
+        };
+      }),
+    };
   }
 
   @Get('/getOne/:id')
@@ -113,7 +122,6 @@ export class ProductController implements OnModuleInit {
       ...body,
       ...translationMapper(body),
     };
-    console.log(body);
     return lastValueFrom(this.productService.Create(body, metadata)).catch(
       (r) => {
         throw new HttpException(
