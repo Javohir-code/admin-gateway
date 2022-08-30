@@ -113,7 +113,7 @@ export class ProductController implements OnModuleInit {
       ...body,
       ...translationMapper(body),
     };
-    console.log(body);
+    // console.log(body);
     return lastValueFrom(this.productService.Create(body, metadata)).catch(
       (r) => {
         throw new HttpException(
