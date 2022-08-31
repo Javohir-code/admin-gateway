@@ -59,7 +59,6 @@ export class CategoryController implements OnModuleInit {
       'width',
       'parentId',
     ]);
-    console.log(changedQuery);
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
     const response = await lastValueFrom(

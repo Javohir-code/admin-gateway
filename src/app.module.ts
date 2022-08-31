@@ -16,6 +16,7 @@ import { VariantFieldsModule } from './variantFields/variantFields.module';
 import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
 import { PageModule } from './page/page.module';
+import { VariantModule } from './variant/variant.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PageModule } from './page/page.module';
     OrderModule,
     CartModule,
     PageModule,
+    VariantModule,
   ],
   controllers: [AppController],
   providers: [AppService],

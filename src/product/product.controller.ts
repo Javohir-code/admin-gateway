@@ -24,6 +24,7 @@ import { GetOneDto } from './dto/get.one.dto';
 import { LangEnum } from '../shared/enums/enum';
 import { Metadata } from '@grpc/grpc-js';
 import { structProtoToJson, translationMapper } from '../shared/utils';
+import * as _ from 'lodash';
 
 @Controller('product')
 export class ProductController implements OnModuleInit {
@@ -45,18 +46,26 @@ export class ProductController implements OnModuleInit {
   ): Promise<{ data: ProductDto[] }> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    return lastValueFrom(this.productService.GetAll(body, metadata)).catch(
-      (r) => {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'error',
-            message: r.message,
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      },
-    );
+    const response = await lastValueFrom(
+      this.productService.GetAll(body, metadata),
+    ).catch((r) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: r.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    return {
+      data: response.data.map((r) => {
+        return {
+          ...r,
+          variantFields: _.values(structProtoToJson(r.variantFields)),
+        };
+      }),
+    };
   }
 
   @Get('/getOne/:id')
@@ -79,9 +88,11 @@ export class ProductController implements OnModuleInit {
         HttpStatus.NOT_FOUND,
       );
     });
+    console.log(data.data.variantFields);
     return {
       ...data?.data,
       translation: structProtoToJson(data?.data?.translation),
+      variantFields: _.values(structProtoToJson(data?.data?.variantFields)),
     };
   }
 
@@ -113,7 +124,10 @@ export class ProductController implements OnModuleInit {
       ...body,
       ...translationMapper(body),
     };
+    // <<<<<<< HEAD
     // console.log(body);
+    // =======
+    // >>>>>>> 9831741e062714490fd7c4941fc6b737de7453ac
     return lastValueFrom(this.productService.Create(body, metadata)).catch(
       (r) => {
         throw new HttpException(
