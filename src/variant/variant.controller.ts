@@ -23,13 +23,7 @@ import { GetAllDto } from './dto/get.all.dto';
 import { GetOneDto } from './dto/get.one.dto';
 import { LangEnum } from '../shared/enums/enum';
 import { Metadata } from '@grpc/grpc-js';
-import {
-  getField,
-  getQuery,
-  jsonValueToProto,
-  structProtoToJson,
-} from '../shared/utils';
-import * as _ from 'lodash';
+import { getQuery, jsonValueToProto } from '../shared/utils';
 
 @Controller('variant')
 export class VariantController implements OnModuleInit {
@@ -40,6 +34,82 @@ export class VariantController implements OnModuleInit {
   onModuleInit() {
     this.variantService =
       this.client.getService<VariantInterface>('VariantService');
+  }
+
+  @Post('/:id/add-image')
+  async addImage(
+    @Param('id') id: string,
+    @Body() body: any,
+    @Headers('lang') lang?: LangEnum,
+  ): Promise<any> {
+    const metadata = new Metadata();
+    metadata.add('lang', `${lang}`);
+    const response = await lastValueFrom(
+      this.variantService.AddImage({ variantId: id, ...body }, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    return {
+      data: response.data,
+    };
+  }
+
+  @Put('/:variantId/update-image/:id')
+  async updateImage(
+    @Param('id') id: string,
+    @Param('variantId') variantId: string,
+    @Body() body: any,
+    @Headers('lang') lang?: LangEnum,
+  ): Promise<any> {
+    const metadata = new Metadata();
+    metadata.add('lang', `${lang}`);
+    const response = await lastValueFrom(
+      this.variantService.UpdateImage({ variantId, id, ...body }, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    return {
+      data: response.data,
+    };
+  }
+
+  @Delete('/:variantId/remove-image/:id')
+  async removeImage(
+    @Param('id') id: string,
+    @Param('variantId') variantId: string,
+    @Headers('lang') lang?: LangEnum,
+  ): Promise<any> {
+    const metadata = new Metadata();
+    metadata.add('lang', `${lang}`);
+    const response = await lastValueFrom(
+      this.variantService.RemoveImage({ variantId, id }, metadata),
+    ).catch((e) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: e.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
+    return {
+      data: response.data,
+    };
   }
 
   @Get('/all')
@@ -96,10 +166,7 @@ export class VariantController implements OnModuleInit {
       );
     });
     return {
-      data: {
-        ...response.data,
-        // translation: structProtoToJson(getField(response.data, 'translation')),
-      },
+      data: response.data,
     };
   }
 
@@ -109,12 +176,9 @@ export class VariantController implements OnModuleInit {
     @Body() body?: any,
     @Headers('lang') lang?: LangEnum,
   ): Promise<any> {
-    console.log('asdasdads');
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
 
-    // const oldTranslation = body.translation;
-    // body.translation = jsonValueToProto(body.translation).structValue;
     const newBody = {
       ...body,
       variantFields: body.variantFields?.map((r) => {
@@ -131,8 +195,6 @@ export class VariantController implements OnModuleInit {
       }),
     };
 
-    console.log(newBody);
-
     const response = await lastValueFrom(
       this.variantService.VariantAdd(newBody),
     ).catch((e) => {
@@ -146,8 +208,6 @@ export class VariantController implements OnModuleInit {
       );
     });
 
-    // response.translation = oldTranslation;
-
     return response;
   }
 
@@ -156,7 +216,6 @@ export class VariantController implements OnModuleInit {
   async Update(@Param('id') id: number, @Body() body: any): Promise<any> {
     const oldTranslation = body.translation;
     body.translation = jsonValueToProto(body.translation).structValue;
-    console.log(body);
     const response = await lastValueFrom(
       this.variantService.Update({ id, ...body }),
     ).catch((e) => {

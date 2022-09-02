@@ -47,7 +47,7 @@ export class ProductController implements OnModuleInit {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
     const response = await lastValueFrom(
-      this.productService.GetAll(body, metadata),
+      this.productService.GetAll({ ...query, ...body }, metadata),
     ).catch((r) => {
       throw new HttpException(
         {
@@ -59,6 +59,7 @@ export class ProductController implements OnModuleInit {
       );
     });
     return {
+      ...response,
       data: response.data.map((r) => {
         return {
           ...r,
@@ -104,30 +105,10 @@ export class ProductController implements OnModuleInit {
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-    // const brand = body.brand?.create;
-    // if (Object.keys(brand || {}).length > 0) {
-    //   body.brand.create = {
-    //     ...brand,
-    //     ...translationMapper(brand),
-    //   };
-    // }
-    // body.categories = body.categories?.map((r) => {
-    //   if (r.create && Object.keys(r.create).length > 0) {
-    //     return {
-    //       ...r,
-    //       ...translationMapper(brand),
-    //     };
-    //   }
-    //   return r;
-    // });
     body = {
       ...body,
       ...translationMapper(body),
     };
-    // <<<<<<< HEAD
-    // console.log(body);
-    // =======
-    // >>>>>>> 9831741e062714490fd7c4941fc6b737de7453ac
     return lastValueFrom(this.productService.Create(body, metadata)).catch(
       (r) => {
         throw new HttpException(
@@ -145,18 +126,18 @@ export class ProductController implements OnModuleInit {
   @Put('/update/:id')
   @ApiResponse({ type: ProductDto })
   async Update(@Param('id') id: string, @Body() body: any): Promise<any> {
-    return lastValueFrom(this.productService.Update({ id, ...body })).catch(
-      (r) => {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'error',
-            message: r.message,
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      },
-    );
+    return lastValueFrom(
+      this.productService.Update({ id, ...body, ...translationMapper(body) }),
+    ).catch((r) => {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          error: 'error',
+          message: r.message,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    });
   }
 
   @Delete('/delete/:id')

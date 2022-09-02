@@ -11,6 +11,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CategoryControllerInterface } from './interfaces/category.interface';
 import { GRPC_PRODUCT_PACKAGE } from './constants';
@@ -39,12 +40,13 @@ export class BrandController implements OnModuleInit {
   @ApiResponse({ type: [BrandDto] })
   async getAll(
     @Body() body: GetAllDto,
+    @Query() query: any,
     @Headers('lang') lang: LangEnum,
   ): Promise<{ data: any }> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
     const response = await lastValueFrom(
-      this.branService.GetAll(body, metadata),
+      this.branService.GetAll({ ...query, ...body }, metadata),
     ).catch((e) => {
       throw new HttpException(
         {
