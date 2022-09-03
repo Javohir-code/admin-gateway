@@ -160,7 +160,6 @@ export class CategoryController implements OnModuleInit {
   async Update(@Param('id') id: number, @Body() body: any): Promise<any> {
     const oldTranslation = body.translation;
     body.translation = jsonValueToProto(body.translation).structValue;
-    console.log(body);
     const response = await lastValueFrom(
       this.categoryService.Update({ id, ...body }),
     ).catch((e) => {
