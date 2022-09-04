@@ -13,4 +13,5 @@ export interface UsersControllerInterface {
   GetRoles(): Observable<any>;
   UpdateStatus(data: any): Observable<any>;
   LoginWithPassword(data: any): Observable<any>;
+  Register(data: any): Observable<any>;
 }

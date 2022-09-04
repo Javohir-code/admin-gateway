@@ -140,4 +140,9 @@ export class UserController implements OnModuleInit {
       }),
     );
   }
+
+  @Post('register')
+  async register(@Body() data: any): Promise<any> {
+    return lastValueFrom(this.usersService.Register({ user: data }));
+  }
 }
