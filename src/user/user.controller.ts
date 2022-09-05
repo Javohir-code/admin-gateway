@@ -23,7 +23,7 @@ import { AtAuthGuard } from './guards/at-auth.guard';
 import { RtAuthGuard } from './guards/rt-auth.guard';
 import { UsersControllerInterface } from './user.interface';
 
-@Controller('admin')
+@Controller('user')
 export class UserController implements OnModuleInit {
   private usersService: UsersControllerInterface;
 
@@ -143,6 +143,11 @@ export class UserController implements OnModuleInit {
 
   @Post('register')
   async register(@Body() data: any): Promise<any> {
+    return lastValueFrom(this.usersService.Register({ user: data }));
+  }
+
+  @Post('merchant/register')
+  async registerMerchant(@Body() data: any): Promise<any> {
     return lastValueFrom(this.usersService.Register({ user: data }));
   }
 }
