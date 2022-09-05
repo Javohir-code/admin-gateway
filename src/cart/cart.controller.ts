@@ -63,7 +63,7 @@ export class CartController implements OnModuleInit {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
     return lastValueFrom(
-      this.cartService.GetOne({ id:id, ...body }, metadata),
+      this.cartService.GetOne({ id: id, ...body }, metadata),
     ).catch((e) => {
       throw new HttpException(
         {

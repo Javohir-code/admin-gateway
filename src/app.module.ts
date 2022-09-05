@@ -16,6 +16,7 @@ import { VariantFieldsModule } from './variantFields/variantFields.module';
 import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
 import { PageModule } from './page/page.module';
+import { VariantModule } from './variant/variant.module';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -37,6 +38,7 @@ import { JwtModule } from '@nestjs/jwt';
     OrderModule,
     CartModule,
     PageModule,
+    VariantModule,
   ],
   controllers: [AppController],
   providers: [AppService],
