@@ -23,6 +23,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('region')
     .addTag('district')
+    .addTag('admin')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

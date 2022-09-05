@@ -17,9 +17,12 @@ import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
 import { PageModule } from './page/page.module';
 import { VariantModule } from './variant/variant.module';
+import { UserModule } from './user/user.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    JwtModule.register({}),
     ConfigModule.forRoot(),
     DistrictModule,
     RegionModule,
@@ -31,6 +34,7 @@ import { VariantModule } from './variant/variant.module';
     CategoryModule,
     BrandModule,
     VariantFieldsModule,
+    UserModule,
     OrderModule,
     CartModule,
     PageModule,
