@@ -1,3 +1,4 @@
+import { jsonToStructProto } from './../shared/utils/index';
 import {
   Body,
   Controller,
@@ -121,6 +122,7 @@ export class VariantController implements OnModuleInit {
     const changedQuery = getQuery(query, [
       'height',
       'id',
+      'productId',
       'image',
       'length',
       'status',
@@ -178,21 +180,13 @@ export class VariantController implements OnModuleInit {
   ): Promise<any> {
     const metadata = new Metadata();
     metadata.add('lang', `${lang}`);
-
+    const oldValues = body?.values;
     const newBody = {
       ...body,
-      variantFields: body.variantFields?.map((r) => {
-        return {
-          ...r,
-          translation: jsonValueToProto(r?.translation),
-          values: r?.values?.map((e) => {
-            return {
-              ...e,
-              translation: jsonValueToProto(e?.translation),
-            };
-          }),
-        };
-      }),
+      values: {
+        ...(body?.values || {}),
+        translation: jsonToStructProto(body.values?.translation),
+      },
     };
 
     const response = await lastValueFrom(
@@ -207,8 +201,12 @@ export class VariantController implements OnModuleInit {
         HttpStatus.NOT_FOUND,
       );
     });
-
-    return response;
+    return {
+      data: {
+        ...response.data,
+        values: oldValues,
+      },
+    };
   }
 
   @Put('/update/:id')

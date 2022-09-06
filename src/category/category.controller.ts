@@ -111,11 +111,11 @@ export class CategoryController implements OnModuleInit {
     ).catch((e) => {
       throw new HttpException(
         {
-          statusCode: HttpStatus.NOT_FOUND,
-          error: 'error',
+          statusCode: HttpStatus.BAD_REQUEST,
+          error: 'Field category_id should be a string or a string array.',
           message: e.message,
         },
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
       );
     });
     return {
