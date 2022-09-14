@@ -14,4 +14,5 @@ export interface UsersControllerInterface {
   UpdateStatus(data: any): Observable<any>;
   LoginWithPassword(data: any): Observable<any>;
   Register(data: any): Observable<any>;
+  UpdateUser(data: any): Observable<any>;
 }

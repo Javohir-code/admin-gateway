@@ -7,6 +7,7 @@ import {
   Inject,
   OnModuleInit,
   Param,
+  Patch,
   Post,
   Put,
   UseGuards,
@@ -149,5 +150,13 @@ export class UserController implements OnModuleInit {
   @Post('merchant/register')
   async registerMerchant(@Body() data: any): Promise<any> {
     return lastValueFrom(this.usersService.Register({ user: data }));
+  }
+
+  @Patch('update')
+  @UseGuards(AtAuthGuard)
+  async updateUser(@CurrentUser() user: any, @Body() data: any): Promise<any> {
+    return lastValueFrom(
+      this.usersService.UpdateUser({ user: data, userId: user.userId }),
+    );
   }
 }
